@@ -7,8 +7,9 @@ define([
 	"dojo/io/script", // get
 	"djeo/Engine",
 	"./Placemark",
+	"djeo/_tiles",
 	"xstyle/css!./dist/leaflet.css"
-], function(require, declare, lang, array, aspect, script, Engine, Placemark){
+], function(require, declare, lang, array, aspect, script, Engine, Placemark, supportedLayers){
 
 return declare([Engine], {
 	
@@ -18,6 +19,7 @@ return declare([Engine], {
 		this._require = require;
 		// set ignored dependencies
 		lang.mixin(this.ignoredDependencies, {"Highlight": 1, "Tooltip": 1});
+		this._supportedLayers = supportedLayers;
 		// initialize basic factories
 		this._initBasicFactories(new Placemark({
 			map: this.map,
@@ -102,11 +104,6 @@ return declare([Engine], {
 	
 	destroy: function() {
 		
-	},
-	
-	enableLayer: function(layerId, enabled) {
-		layerId = layerId.toLowerCase();
-		//if (enabled && supportedLayers[layerId]) this.ymap.setType(Y.MapType[supportedLayers[layerId]]);
 	},
 	
 	_setCamera: function(kwArgs) {
