@@ -21,9 +21,8 @@ return declare(null, {
 			lmap.doubleClickZoom.disable();
 			lmap.off("zoomend", this._onZoom, this);
 		}
-	},
-	
-	
+	}
+
 });
 
 });
