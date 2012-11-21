@@ -1,20 +1,16 @@
 define([
-	"dojo/_base/declare", // declare
-	"djeo/WebTiles"
-], function(declare, WebTiles) {
+	"dojo/_base/declare" // declare
+], function(declare) {
 
-return declare([WebTiles], {
+return declare(null, {
 	
-	constructor: function(kwArgs, map) {
-		var tileLayer = new L.TileLayer("{s}/{z}/{x}/{y}.png", {
+	init: function() {
+		var str = this.yFirst ? "y}/{x" : "x}/{y"
+			tileLayer = new L.TileLayer("{s}/{z}/{" + str + "}.png", {
 			subdomains: this.url
 		});
 		this._tileLayer = tileLayer;
 		this.map.engine.lmap.addLayer(tileLayer);
-	},
-	
-	init: function() {
-		
 	}
 });
 
