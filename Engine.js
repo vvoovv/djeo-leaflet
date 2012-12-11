@@ -10,6 +10,20 @@ define([
 	"djeo/_tiles",
 	"xstyle/css!./dist/leaflet.css"
 ], function(require, declare, lang, array, aspect, script, Engine, Placemark, supportedLayers){
+	
+var mapEvents = {
+	zoom_changed: 1,
+	click: 1,
+	mousemove: 1
+};
+	
+function _wrapListener(lmap, event, callback, context) {
+	return {
+		remove: function() {
+			lmap.off(event, callback, context);
+		}
+	};
+}
 
 return declare([Engine], {
 	
@@ -92,7 +106,24 @@ return declare([Engine], {
 			connection[0].off(connection[1], connection[2]);
 		});
 	},
-	
+
+	onForMap: function(event, method, context) {
+		var callback = function(e){
+			var ll = e.latlng;
+			method.call(context, {
+				mapCoords: [ll.lng, ll.lat],
+				nativeEvent: e
+			});
+		};
+		this.lmap.on(event, callback);
+		return _wrapListener(this.lmap, event, callback);
+	},
+
+	_on_zoom_changed: function(event, method, context) {
+		this.lmap.on("zoomend", method, context);
+		return _wrapListener(this.lmap, "zoomend", method, context);
+	},
+
 	zoomTo: function(extent) {
 		// A hack for a point
 		if (extent[0]==extent[2] && extent[1]==extent[3]) {
