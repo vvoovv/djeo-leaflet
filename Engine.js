@@ -44,8 +44,11 @@ return declare([Engine], {
 	initialize: function(/* Function */readyFunction) {
 		if (window.L) {
 			// the first case: Leaflet API is completely loaded
-			this.map.projection = "EPSG:4326";
-			var lmap = new L.Map(this.map.container, {
+			var map = this.map;
+			map.projection = "EPSG:4326";
+			var lmap = new L.Map(map.container, {
+				minZoom: map.minZoom,
+				maxZoom: map.maxZoom,
 				//dragging: false, TODO: getting error otherwise
 				touchZoom: false,
 				scrollWheelZoom: false,
