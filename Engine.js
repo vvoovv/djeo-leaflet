@@ -127,6 +127,11 @@ return declare([Engine], {
 		return _wrapListener(this.lmap, "zoomend", method, context);
 	},
 
+	_on_extent_changed: function(event, method, context) {
+		this.lmap.on("moveend", method, context);
+		return _wrapListener(this.lmap, "moveend", method, context);
+	},
+
 	zoomTo: function(extent) {
 		// A hack for a point
 		if (extent[0]==extent[2] && extent[1]==extent[3]) {
@@ -161,6 +166,14 @@ return declare([Engine], {
 	
 	_get_zoom: function() {
 		return this.lmap.getZoom();
+	},
+	
+	_get_extent: function() {
+		var bounds = this.lmap.getBounds(),
+			sw = bounds.getSouthWest(),
+			ne = bounds.getNorthEast()
+		;
+		return [sw.lng, sw.lat, ne.lng, ne.lat];
 	}
 });
 
