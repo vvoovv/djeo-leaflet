@@ -3,8 +3,9 @@ define([
 	"dojo/_base/lang", // mixin
 	"dojo/_base/array", // forEach, map
 	"dojo/_base/Color",
+	"djeo/util/_base",
 	"djeo/common/Placemark"
-], function(declare, lang, array, Color, P){
+], function(declare, lang, array, Color, u, P){
 
 var Placemark = declare([P], {
 
@@ -69,7 +70,9 @@ var Placemark = declare([P], {
 			shapeType = P.get("shape", calculatedStyle, specificStyle, specificShapeStyle),
 			src = P.getImgSrc(calculatedStyle, specificStyle, specificShapeStyle),
 			isVectorShape = true,
-			scale = P.getScale(calculatedStyle, specificStyle, specificShapeStyle)
+			scale = P.getScale(calculatedStyle, specificStyle, specificShapeStyle),
+			heading = feature.orientation,
+			hasHeading = feature.map.simulateOrientation && heading !== undefined
 		;
 
 		if (!shapeType && src) isVectorShape = false;
@@ -82,6 +85,15 @@ var Placemark = declare([P], {
 		};
 		
 		var url = this._getIconUrl(isVectorShape, shapeType, src);
+		if (hasHeading) {
+			if (lang.isObject(heading)) heading = heading.heading;
+			heading = Math.round(u.radToDeg(heading));
+			if (heading<0) heading = 360 + heading;
+			if (url) {
+				url = getSpriteUrl(feature, url);
+				url = url[0] + url[1] + "_" + heading + "." + url[2];
+			}
+		}
 		if (url) iconOptions.iconUrl = url;
 
 		var size = isVectorShape ? P.getSize(calculatedStyle, specificStyle, specificShapeStyle) : P.getImgSize(calculatedStyle, specificStyle, specificShapeStyle);
@@ -168,12 +180,35 @@ var Placemark = declare([P], {
 		feature.baseShapes[0].setLatLng(ll);
 	},
 
-	rotate: function(orientation, feature) {
-
+	setOrientation: function(o, feature) {
+		// orientation is actually heading
+		if (!feature.map.simulateOrientation) return;
+		var marker = feature.baseShapes[0],
+			iconOptions = marker.options.icon.options,
+			heading = Math.round(u.radToDeg(o))
+		;
+		var url = feature.reg.url;
+		if (!url) {
+			url = getSpriteUrl(feature, iconOptions.iconUrl);
+			
+		}
+		if (heading<0) heading = 360 + heading;
+		iconOptions.iconUrl = url[0] + url[1] + "_" + heading + "." + url[2];
+		marker.setIcon(new L.Icon(iconOptions));
 	}
 });
 
-var convertColor = function(c, a) {
+function getSpriteUrl(feature, url) {
+	var fileName = url.match(/\b\w+\.\w{3,4}$/)[0],
+		fileName_ = fileName.split("."),
+		path = url.substr(0, url.length-fileName_[0].length-fileName_[1].length-1)
+	;
+	url = [path + fileName_[0] + "_" + fileName_[1] + "/", fileName_[0], fileName_[1]];
+	feature.reg.url = url;
+	return url;
+}
+
+function convertColor(c, a) {
 	rgba = new Color(c).toRgba();
 	// convert alpha to [0..255] scale
 	rgba[3] = Math.round(255*a);
@@ -185,15 +220,15 @@ var convertColor = function(c, a) {
 	return rgbaHex.join('');
 };
 
-var getColor = function(ymapsColor) {
+function getColor(ymapsColor) {
 	return "#" + ymapsColor.substring(0,6);
 };
 
-var getOpacity = function(ymapsColor) {
+function getOpacity(ymapsColor) {
 	return parseInt(ymapsColor.substring(6), 16) / 255;
 };
 
-var applyStroke = function(ymapsStyle, calculatedStyle, specificStyle, specificShapeStyle) {
+function applyStroke(ymapsStyle, calculatedStyle, specificStyle, specificShapeStyle) {
 	var stroke = P.get("stroke", calculatedStyle, specificStyle, specificShapeStyle),
 		strokeWidth = P.get("strokeWidth", calculatedStyle, specificStyle, specificShapeStyle),
 		strokeOpacity = P.get("strokeOpacity", calculatedStyle, specificStyle, specificShapeStyle);
