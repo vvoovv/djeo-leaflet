@@ -1,0 +1,17 @@
+{
+	"name": "djeo-leaflet",
+	"author": "Vladimir Elistratov",
+	"description": "Leaflet engine for the djeo library",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vvoovv/djeo-leaflet"
+	},
+	"bugs": "https://github.com/vvoovv/djeo-leaflet/issues",
+	"dependencies": {
+		"djeo": "current"
+	},
+	"keywords": ["djeo", "geo", "Leaflet"],
+	"homepage": "http://djeo.org",
+	"icon": "http://djeo.github.com/djeo25.png",
+	"dojoBuild": "djeo-leaflet.profile.js"
+}
