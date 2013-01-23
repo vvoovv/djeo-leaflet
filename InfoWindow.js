@@ -20,7 +20,7 @@ return declare(null, {
 			ll = new L.LatLng(coords[1], coords[0]);
 		}
 		else {
-			ll = event.event.latlng;
+			ll = event.nativeEvent.latlng;
 		}
 		iw.setLatLng(ll);
 		iw.setContent(content);
