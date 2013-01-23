@@ -8,7 +8,8 @@
 	},
 	"bugs": "https://github.com/vvoovv/djeo-leaflet/issues",
 	"dependencies": {
-		"djeo": "current"
+		"djeo": "current",
+		"xstyle": "current"
 	},
 	"keywords": ["djeo", "geo", "Leaflet"],
 	"homepage": "http://djeo.org",
