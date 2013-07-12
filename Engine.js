@@ -16,6 +16,28 @@ var mapEvents = {
 	click: 1,
 	mousemove: 1
 };
+
+function _patch() {
+	var _update = L.Marker.prototype.update;
+	L.Marker.include({
+		update: function() {
+			_update.apply(this, []);
+
+			var options = this.options.icon.options;
+			if (options.angle !== undefined) {
+				var a = options.iconAnchor,
+					s = options.iconSize
+				;
+				a = L.point(s).divideBy(2)._subtract(L.point(a));
+				var transform = '';
+				transform += ' translate(' + -a.x + 'px, ' + -a.y + 'px)';
+				transform += ' rotate(' + options.angle + 'deg)';
+				transform += ' translate(' + a.x + 'px, ' + a.y + 'px)';
+				this._icon.style[L.DomUtil.TRANSFORM] += transform;
+			}
+		}
+	});
+}
 	
 function _wrapListener(lmap, event, callback, context) {
 	return {
@@ -73,6 +95,7 @@ return declare([Engine], {
 			script.get({
 				url: require.toUrl("./dist/leaflet.js"),
 				load: lang.hitch(this, function() {
+					_patch();
 					this._initializing();
 					delete this._initializing;
 					this.initialize(readyFunction);

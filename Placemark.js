@@ -71,8 +71,7 @@ var Placemark = declare([P], {
 			src = P.getImgSrc(calculatedStyle, specificStyle, specificShapeStyle),
 			isVectorShape = true,
 			scale = P.getScale(calculatedStyle, specificStyle, specificShapeStyle),
-			heading = feature.orientation,
-			hasHeading = feature.map.simulateOrientation && heading !== undefined
+			heading = feature.orientation
 		;
 
 		if (!shapeType && src) isVectorShape = false;
@@ -85,14 +84,11 @@ var Placemark = declare([P], {
 		};
 		
 		var url = this._getIconUrl(isVectorShape, shapeType, src);
-		if (hasHeading) {
+		if (heading != undefined) {
 			if (lang.isObject(heading)) heading = heading.heading;
 			heading = Math.round(u.radToDeg(heading));
 			if (heading<0) heading = 360 + heading;
-			if (url) {
-				url = getSpriteUrl(feature, url);
-				url = url[0] + url[1] + "_" + heading + "." + url[2];
-			}
+			iconOptions.angle = heading;
 		}
 		if (url) iconOptions.iconUrl = url;
 
@@ -187,26 +183,11 @@ var Placemark = declare([P], {
 			iconOptions = marker.options.icon.options,
 			heading = Math.round(u.radToDeg(o))
 		;
-		var url = feature.reg.url;
-		if (!url) {
-			url = getSpriteUrl(feature, iconOptions.iconUrl);
-			
-		}
 		if (heading<0) heading = 360 + heading;
-		iconOptions.iconUrl = url[0] + url[1] + "_" + heading + "." + url[2];
+		iconOptions.angle = heading;
 		marker.setIcon(new L.Icon(iconOptions));
 	}
 });
-
-function getSpriteUrl(feature, url) {
-	var fileName = url.match(/\b\w+\.\w{3,4}$/)[0],
-		fileName_ = fileName.split("."),
-		path = url.substr(0, url.length-fileName_[0].length-fileName_[1].length-1)
-	;
-	url = [path + fileName_[0] + "_" + fileName_[1] + "/", fileName_[0], fileName_[1]];
-	feature.reg.url = url;
-	return url;
-}
 
 function convertColor(c, a) {
 	rgba = new Color(c).toRgba();
