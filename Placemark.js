@@ -201,24 +201,24 @@ function convertColor(c, a) {
 	return rgbaHex.join('');
 };
 
-function getColor(ymapsColor) {
-	return "#" + ymapsColor.substring(0,6);
+function getColor(color) {
+	return "#" + color.substring(0,6);
 };
 
-function getOpacity(ymapsColor) {
-	return parseInt(ymapsColor.substring(6), 16) / 255;
+function getOpacity(color) {
+	return parseInt(color.substring(6), 16) / 255;
 };
 
-function applyStroke(ymapsStyle, calculatedStyle, specificStyle, specificShapeStyle) {
+function applyStroke(style, calculatedStyle, specificStyle, specificShapeStyle) {
 	var stroke = P.get("stroke", calculatedStyle, specificStyle, specificShapeStyle),
 		strokeWidth = P.get("strokeWidth", calculatedStyle, specificStyle, specificShapeStyle),
 		strokeOpacity = P.get("strokeOpacity", calculatedStyle, specificStyle, specificShapeStyle);
 
 	if (stroke || strokeWidth!==undefined || strokeOpacity!==undefined) {
-		stroke = stroke ? stroke : getColor(ymapsStyle.strokeColor);
-		strokeOpacity = strokeOpacity!==undefined ? strokeOpacity : getOpacity(ymapsStyle.strokeColor);
-		ymapsStyle.strokeColor = convertColor(stroke, strokeOpacity);
-		if (strokeWidth !== undefined) ymapsStyle.strokeWidth = strokeWidth;
+		stroke = stroke ? stroke : getColor(style.strokeColor);
+		strokeOpacity = strokeOpacity!==undefined ? strokeOpacity : getOpacity(style.strokeColor);
+		style.strokeColor = convertColor(stroke, strokeOpacity);
+		if (strokeWidth !== undefined) style.strokeWidth = strokeWidth;
 	}
 };
 
