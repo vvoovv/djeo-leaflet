@@ -168,12 +168,47 @@ var Placemark = declare([P], {
 	},
 	
 	makeText: function(feature, calculatedStyle) {
-		
+		if (feature.textShapes) {
+			array.forEach(feature.textShapes, function(t) {
+				this.engine.lmap.removeLayer(t);
+			}, this);
+		}
+
+		var textStyle = P.getTextStyle(feature, calculatedStyle);
+		if (!textStyle) return;
+
+		var label = textStyle.label || this._getLabel(feature, textStyle);
+
+		if (label) {
+			// ts states for "text style"
+			feature.reg.ts = textStyle;
+
+			// halo is ignored
+			var coords = feature.getCoords(),
+				scale = P.getScale(feature.reg.cs),
+				dx = ("dx" in textStyle) ? scale*textStyle.dx : 0,
+				dy = ("dy" in textStyle) ? scale*textStyle.dy : 0,
+				iconOptions = {
+					html: label,
+					iconAnchor: [dx,dy]
+				}
+			;
+			if ("size" in textStyle) {
+				iconOptions.size = scale*textStyle.size;
+			}
+			return new L.Marker([coords[1], coords[0]], {
+				icon: new L.TextIcon(iconOptions),
+				zIndexOffset: 1
+			});
+		}
 	},
-	
+
 	setCoords: function(coords, feature) {
 		var ll = new L.LatLng(coords[1], coords[0]);
 		feature.baseShapes[0].setLatLng(ll);
+		if (feature.textShapes) {
+			feature.textShapes[0].setLatLng(ll);
+		}
 	},
 
 	setOrientation: function(o, feature) {

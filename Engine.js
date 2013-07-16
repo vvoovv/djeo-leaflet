@@ -37,6 +37,40 @@ function _patch() {
 			}
 		}
 	});
+
+L.TextIcon = L.Icon.extend({
+	options: {
+		iconAnchor: [0, 0]
+	},
+
+	createIcon: function(oldIcon) {
+		var div = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div'),
+		    options = this.options
+		;
+
+		if (options.html) {
+			div.innerHTML = options.html;
+		}
+		this._setIconStyles(div);
+		return div;
+	},
+	
+	_setIconStyles: function(div, name) {
+		var options = this.options,
+		    anchor = L.point(options.iconAnchor)
+		;
+
+		if ("size" in options) {
+			div.style.fontSize = options.size + "px";
+		}
+		div.style.marginLeft = anchor.x + "px";
+		div.style.marginTop  = (-anchor.y) + "px";
+	},
+
+	createShadow: function() {
+		return null;
+	}
+});
 }
 	
 function _wrapListener(lmap, event, callback, context) {
