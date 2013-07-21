@@ -175,7 +175,7 @@ var Placemark = declare([P], {
 		}
 
 		var textStyle = P.getTextStyle(feature, calculatedStyle);
-		if (!textStyle) return;
+		if (!textStyle || !textStyle.size) return;
 
 		var label = textStyle.label || this._getLabel(feature, textStyle);
 
@@ -193,9 +193,7 @@ var Placemark = declare([P], {
 					iconAnchor: [dx,dy]
 				}
 			;
-			if ("size" in textStyle) {
-				iconOptions.size = scale*textStyle.size;
-			}
+			iconOptions.size = scale*textStyle.size;
 			return new L.Marker([coords[1], coords[0]], {
 				icon: new L.TextIcon(iconOptions),
 				zIndexOffset: 1

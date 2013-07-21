@@ -44,7 +44,7 @@ L.TextIcon = L.Icon.extend({
 	},
 
 	createIcon: function(oldIcon) {
-		var div = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div'),
+		var div = (oldIcon && oldIcon.tagName === "DIV") ? oldIcon : document.createElement("div"),
 		    options = this.options
 		;
 
@@ -57,14 +57,13 @@ L.TextIcon = L.Icon.extend({
 	
 	_setIconStyles: function(div, name) {
 		var options = this.options,
-		    anchor = L.point(options.iconAnchor)
+		    anchor = options.iconAnchor
 		;
 
-		if ("size" in options) {
-			div.style.fontSize = options.size + "px";
-		}
-		div.style.marginLeft = anchor.x + "px";
-		div.style.marginTop  = (-anchor.y) + "px";
+		div.style.fontSize = options.size + "px";
+		div.style.position = "absolute";
+		div.style.marginLeft = anchor[0] + "px";
+		div.style.marginTop  = (-anchor[1]) + "px";
 	},
 
 	createShadow: function() {
