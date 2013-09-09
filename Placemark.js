@@ -159,7 +159,13 @@ var Placemark = declare([P], {
 	},
 	
 	remove: function(feature) {
-
+		var lmap = this.engine.lmap;
+		lmap.removeLayer(feature.baseShapes[0]);
+		if (feature.textShapes) {
+			array.forEach(feature.textShapes, function(shape){
+				lmap.removeLayer(shape);
+			});
+		}
 	},
 	
 	show: function(feature, show) {
