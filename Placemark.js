@@ -165,6 +165,7 @@ var Placemark = declare([P], {
 			array.forEach(feature.textShapes, function(shape){
 				lmap.removeLayer(shape);
 			});
+			feature.textShapes = [];
 		}
 	},
 	
@@ -178,6 +179,7 @@ var Placemark = declare([P], {
 			array.forEach(feature.textShapes, function(t) {
 				this.engine.lmap.removeLayer(t);
 			}, this);
+			feature.textShapes = [];
 		}
 
 		var textStyle = P.getTextStyle(feature, calculatedStyle);
